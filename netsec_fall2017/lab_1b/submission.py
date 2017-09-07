@@ -1,5 +1,5 @@
 from playground.network.packet import PacketType
-from playground.network.packet.fieldtypes import STRING,UINT32
+from playground.network.packet.fieldtypes import STRING,UINT32,BOOL
 
 class RequestPasswordReset(PacketType):
 	DEFINITION_IDENTIFIER="lab1b.rxy.RequestPasswordReset"
@@ -43,7 +43,7 @@ class Result(PacketType):
 	DEFINITION_IDENTIFIER="lab1b.rxy.Result"
 	DEFINITION_VERSION="1.0"
 	FIELDS=[
-		("result",STRING),
+		("result",BOOL),
 		("id",UINT32)
 		]
 
@@ -82,11 +82,14 @@ def basicUnitTest():
 	assert packet5==packet5a
 	
 	packet6=Result()
-	packet6.result="true"
+	packet6.result=True
 	packet6.id=5
 	packet6Bytes=packet6.__serialize__()
 	packet6a=Result.Deserialize(packet6Bytes)
 	assert packet6==packet6a
+	#The result(BOOL type) is True,but we try other values which can also runs correctly, such as the following 2 examples
+	#packet6.result=123
+	#packet6.result="good"
 
 	pktBytes=packet1.__serialize__()+packet2.__serialize__()+packet3.__serialize__()+packet4.__serialize__()+packet5.__serialize__()+packet6.__serialize__()
 	deserializer=PacketType.Deserializer()
